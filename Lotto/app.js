@@ -3,8 +3,11 @@ const input= document.querySelector('.input');
 const btn = document.querySelector('button');
 const info = document.querySelector('.info');
 const rank = document.querySelector('.rank');
+const dpLotto = document.querySelector('.lottoNumber');
+const dpBonus = document.querySelector('.bonusNumber');
 
 const userNumber = [];
+let count;
 
 
 const lottoArray = Array(45).fill().map(function(value,index){
@@ -77,8 +80,10 @@ function start(e){
   },6000)
   setTimeout(function(){
     let bonusResult = document.querySelector('.bonus');
+    dpBonus.textContent='보너스';
     play(bonus,bonusResult)
-  },7000)
+  },7000);
+ 
 }
 
 function myNumber(e){
@@ -91,26 +96,28 @@ function myNumber(e){
     input.focus();
     input.value='';
     if(userNumber.length===6){
+      dpLotto.textContent='결과번호';
         start();
         compareNumber();
+        setTimeout(function(){
+          rank.textContent= count + '개 맞았습니다.';
+        },8000);
         info.textContent='내 번호는' + userNumber +'입니다.'
     }
     console.log(userNumber);
 }
 
 function compareNumber(){
-    let count =0;
+     count =0;
     for(i=0;i<userNumber.length; i++){
-        if(ballNumber.indexOf(userNumber[i])>-1){
+        if(ballNumber.indexOf(userNumber[i])>-1||userNumber[i]===bonus){
             count++;
         }
     }
-    rank.textContent= count+'개 맞았습니다.';
-    console.log(count);
+    
 }
 
 
 
 btn.addEventListener('click',myNumber);
-
 

@@ -60,24 +60,14 @@ while(lottoArray.length>0){
     dpresult.appendChild(ball);
   }
 function start(e){
-  setTimeout(function(){
-    play(ballNumber[0],result);
-  }, 1000);
-  setTimeout(function(){
-    play(ballNumber[1],result)
-  }, 2000)
-  setTimeout(function(){
-    play(ballNumber[2],result)
-  },3000)
-  setTimeout(function(){
-    play(ballNumber[3],result)
-  },4000)
-  setTimeout(function(){
-    play(ballNumber[4],result)
-  },5000)
-  setTimeout(function(){
-    play(ballNumber[5],result)
-  },6000)
+  for(let i=0; i<ballNumber.length; i++){
+    (function clouser(j){
+      setTimeout(function(){
+      play(ballNumber[j],result);
+    },(j+1)*1000);
+  })(i);
+}
+  
   setTimeout(function(){
     let bonusResult = document.querySelector('.bonus');
     dpBonus.textContent='보너스';

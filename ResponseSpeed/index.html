@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            display: flex;
+            flex:1;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        #screen{
+            width:600px;
+            height:300px;
+            text-align: center;
+            user-select: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border:solid 1px black;
+        }
+        .waiting{
+            background-color: aqua;
+        }
+        .ready{
+            background-color: red;
+            color:white;   
+        }
+        .now{
+            background-color: greenyellow;
+        }
+        .result{
+            background: white;
+        }
+        .average{
+            background: orange;
+        }
+    </style>
+</head>
+<body>
+    <div id="screen" class="waiting">클릭해서 시작하세요.</div>
+    <script src="speed.js"></script>
+</body>
+</html>

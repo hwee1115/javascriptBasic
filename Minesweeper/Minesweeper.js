@@ -21,7 +21,6 @@ document.querySelector('#exec').addEventListener('click',()=>{
     const hor = parseInt(document.querySelector('#hor').value);
     const ver = parseInt(document.querySelector('#ver').value);
     const mine = parseInt(document.querySelector('#mine').value);
-    console.log(hor,ver,mine);
 
 
 for(let i=0;i<ver; i++){
@@ -41,12 +40,14 @@ for(let i=0;i<ver; i++){
             let parentTbody = e.currentTarget.parentNode.parentNode;
             const section = Array.prototype.indexOf.call(parentTr.children,td);     //.children() =>  자식 유사배열
             const line = Array.prototype.indexOf.call(parentTbody.children,tr); //Array.prototype.indexOf.call() => 유사배열의 인덱스를 확인하기 위한 방법
-            console.log(section, line);
             let target=e.currentTarget;
-            if(target.textContent===''||target.textContent==='X'){
+            if(dataset[line][section]===1){
+                return
+            }
+            else if(target.textContent===''||target.textContent==='X'){
                 target.textContent='!';
+                target.classList.add('flag');
                 if(dataset[line][section]==='X'){
-                    console.log('gi')
                     dataset[line][section] = code.mineFlag
                 }else{
                     dataset[line][section] = code.flag
@@ -54,12 +55,15 @@ for(let i=0;i<ver; i++){
             }
             else if( target.textContent==='!'){
                 target.textContent ='?';
+                target.classList.remove('flag')
+                target.classList.add('question');
                 if(dataset[line][section]===code.mineFlag){
                     dataset[line][section] = code.questionMine;
                 }else{
                     dataset[line][section] = code.question;
                 }
             }else if(target.textContent==='?'){
+                target.classList.remove('question');
                 if(dataset[line][section]===code.questionMine){
                     target.textContent='X';
                     dataset[line][section] = 'X'
@@ -84,11 +88,11 @@ for(let i=0;i<ver; i++){
             }
             e.currentTarget.classList.add('opened');
             openSection+=1;
-            console.log(openSection);
             if(dataset[line][section]==='X'){
                 e.currentTarget.textContent='펑';
                 result.textContent ='실패';
                 stopflag=true;
+                //지뢰 개수 카운팅
             }else{
                 around=[
                     dataset[line][section-1],dataset[line][section+1]
@@ -101,12 +105,13 @@ for(let i=0;i<ver; i++){
                     around=around.concat([dataset[line+1][section-1],dataset[line+1][section],dataset[line+1][section+1]]);
                 }
                 aroundMines=around.filter((v)=>{            //filter() =>주어진 함수의 테스트를 통과하는 요소를 모아 배열을 새로 만듬
-                    return v==='X'
+                    return ['X',code.mineFlag,code.questionMine].includes(v);
                 }).length;
                 e.currentTarget.textContent= aroundMines || '';     //false,0,nuull이나 undenifed값을 보여주지 않기
                 dataset[line][section]=1
                 //0인칸 주변열기
-                if(aroundMines === 0){
+                
+                if(aroundMines===0){
                     aroundSection=[];
                     if(tbody.children[line-1]){
                         aroundSection = aroundSection.concat([
@@ -124,16 +129,16 @@ for(let i=0;i<ver; i++){
                             tbody.children[line+1].children[section],
                             tbody.children[line+1].children[section+1]]);
                     }
-                    
+                    console.log(aroundSection)
                     aroundSection.filter((v)=>{
                         return !!v
                     }).forEach((next)=>{
-                        console.log(next);
                         let parentTr = next.parentNode;   
                         let parentTbody = next.parentNode.parentNode;
                         const nextSection = Array.prototype.indexOf.call(parentTr.children,next);
                         const nextLine = Array.prototype.indexOf.call(parentTbody.children,parentTr);
                         if(dataset[nextLine][nextSection]!==1){
+                            console.log(next);
                             next.click();
                         }
                     }); 
@@ -153,21 +158,19 @@ const tableArray = Array(hor*ver).fill().map((element,index)=>{
     return index;
 });
 const tableSize = tableArray.length;
-console.log(tableSize-mine)
 const mineCandidate =[];
 while(tableArray.length> tableSize-mine){
     let randomArray = tableArray.splice(Math.floor(Math.random()*tableArray.length),1)[0];
     mineCandidate.push(randomArray);
 }
 
-console.log(mineCandidate);
+
 //지뢰 심기
 for(let k =0; k<mineCandidate.length; k++){
     mineVer = Math.floor(mineCandidate[k]/ver);
-    mineHor = mineCandidate[k]%ver;
-    console.log(mineVer,mineHor)
+    mineHor = mineCandidate[k]%ver;  
     tbody.children[mineVer].children[mineHor].textContent='X'
     dataset[mineVer][mineHor]='X'
 }
-console.log(tbody.children);
+
 });

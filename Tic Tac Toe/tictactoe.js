@@ -17,19 +17,10 @@ for(let i=0; i<3; i++){
 }
 body.appendChild(table);
 const h1 = document.createElement('h1');
-result= body.appendChild(h1);
-console.log(tableArray);
+result= body.appendChild(h1)
 
-function play(e){
-    const lineNumber = lineArray.indexOf(e.target.parentNode);
-    const scNumber = tableArray[lineNumber].indexOf(e.target);
-    console.log(lineNumber,scNumber);
-
-    if(tableArray[lineNumber][scNumber].textContent !==''){
-        return;
-    }else{
-        tableArray[lineNumber][scNumber].textContent = turn;
-        let sameTurn = false;
+function check(lineNumber,scNumber){ 
+    let sameTurn = false;
         if(                                 //가로검사
             tableArray[lineNumber][0].textContent === turn &&
             tableArray[lineNumber][1].textContent === turn &&
@@ -43,36 +34,93 @@ function play(e){
             tableArray[2][scNumber].textContent === turn
         ){
                 sameTurn = true;
-                console.log('정답');
         }
-        if(lineNumber - scNumber === 0) {   //대각선
-            if(
+        //대각선 검사
+        if(                                             
             tableArray[0][0].textContent === turn &&
             tableArray[1][1].textContent === turn &&
             tableArray[2][2].textContent === turn
             ){
-                sameTurn = true;
+                sameTurn = true;  
             }
-        }
-        if(Math.abs(lineNumber + scNumber) ===2){
-            if(            
-                tableArray[0][2].textContent === turn &&
-                tableArray[1][1].textContent === turn &&
-                tableArray[2][0].textContent === turn
+        
+        if(            
+            tableArray[0][2].textContent === turn &&
+            tableArray[1][1].textContent === turn &&
+            tableArray[2][0].textContent === turn
             ){
                 sameTurn =true;
             }
+            return sameTurn;
+    }
+    
+function reset(draw){
+    if(draw){
+        result.textContent = '비겼습니다.'
+    }else{
+        result.textContent = turn + '승리입니다.'
         }
-        if(sameTurn){
-            result.textContent = turn + '승리입니다.'
-            tableArray.forEach(lines =>{
-               lines.forEach(sections => sections.textContent ='')
+    setTimeout(()=>{
+        result.textContent='';
+        tableArray.forEach(lines=>{
+            lines.forEach(section=>{
+                section.textContent=''
+            });
+        });
+    
+    },1000);  
+
+}
+
+function play(e){
+    let emptySection = [];
+    if(turn ==='O'){
+        return;
+    }
+   
+    const lineNumber = lineArray.indexOf(e.target.parentNode);
+    const scNumber = tableArray[lineNumber].indexOf(e.target);
+    if(tableArray[lineNumber][scNumber].textContent !==''){
+        return;
+    }else{
+        tableArray[lineNumber][scNumber].textContent = turn;
+        const win=check(lineNumber,scNumber);
+        tableArray.forEach(lines=>{
+            lines.forEach(section=>{
+                emptySection.push(section);
             })
-        }
-        if(turn ==='X'){
-            turn ='O'
-        }else{
-            turn='X';
-        }
+        });
+        emptySection = emptySection.filter(section=>{
+             return !section.textContent
+         });
+         if(win){
+            console.log('다참');
+             reset();
+         }
+         else if(emptySection.length===0){
+            console.log('칸없음');
+             reset(true);
+         }else{
+            console.log('진행');
+            if(turn ==='X'){
+                turn ='O'    
+            }
+         
+    
+        //컴퓨터
+        setTimeout(()=>{
+            let comSection=emptySection[Math.floor(Math.random()*emptySection.length)];
+             comSection.textContent=turn; 
+             const lineNumber = lineArray.indexOf(comSection.parentNode);
+             const scNumber = tableArray[lineNumber].indexOf(comSection);
+            const win= check(lineNumber,scNumber);
+             if(win){
+                 reset();
+                 clearTimeout();
+             }
+             //턴돌리기
+             turn='X';
+        },1000)
+    }
     }
 }

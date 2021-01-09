@@ -33,16 +33,20 @@ for(let i=0; i<ver*hor; i++){
     document.body.appendChild(card);
     (function (c){
         card.addEventListener('click',()=>{
+            if(card.classList.contains('flipped')){
+                flag=false;
+            }else{
+                flag=true;
+            }
             if(flag && !pairCard.includes(c)){
                 card.classList.toggle('flipped');
                 clickCard.push(c);
                 if(clickCard.length===2){
                     console.log('a')
                     if(clickCard[0].querySelector('.card-back').style.backgroundColor===clickCard[1].querySelector('.card-back').style.backgroundColor){
-                        console.log('a')
                         pairCard.push(clickCard[0]);
-                        pairCard.push(clickCard[1]);
-                        clickCard=[];
+                            pairCard.push(clickCard[1]);
+                            clickCard=[];
                         if(pairCard.length===12){
                             setTimeout(()=>{
                                 let endTime = new Date();
@@ -55,7 +59,6 @@ for(let i=0; i<ver*hor; i++){
                                 shuffle();
                                 cardPlay(ver,hor);
                             },1000)
-                            
                         }
                     }else{
                         flag=false;
@@ -66,9 +69,10 @@ for(let i=0; i<ver*hor; i++){
                             flag=true
                         },1000)
                         
-                    }
+                    } 
                 }
             }
+        
             
         });
     })(card);
@@ -90,6 +94,8 @@ for(let i=0; i<ver*hor; i++){
 
         
 }
+
+
 
 
 shuffle();
